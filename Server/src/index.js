@@ -49,12 +49,14 @@ const storage = multer.diskStorage({
 const upload = multer({storage})
 
 //MongoDB connection using vsCode url
-const  mongoURl  = "mongodb+srv://thabang:june@social.60ndiqt.mongodb.net/"
+const  mongoURl  = process.env.MONGOURL
 
 // Using VsCode url to connect with mongo DBc
 mongoose.connect(mongoURl).then(()=> console.log("Connected to MONGODB")).catch((err)=>console.log("Cannot connect to MONGODB",err))
 
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5001;
+
 app.listen(port,()=>{
     console.log(`Server running on por ${port}`)
+    
 })
