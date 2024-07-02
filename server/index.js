@@ -8,7 +8,7 @@ import { authRoutes } from "./routes/Auth.js";
 const app =express();
 
 //*********Middlewares*************
-app.use(express.json())
+app.use(express.json()) //Runs between request and responds to parse req.body
 
 //Cookie parser simplifies handling of cookies
 
