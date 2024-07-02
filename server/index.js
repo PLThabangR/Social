@@ -26,7 +26,7 @@ const  mongoURl  = process.env.MONGOURL
 const port = process.env.PORT || 5001;
 
 app.listen(port,()=>{
-    console.log(`Server running on por ${port}`)
+    console.log(`Server running on port ${port}`)
     
 })
 
