@@ -1,7 +1,8 @@
-import express, { urlencoded } from "express"
+import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import dotenv from "dotenv"
+import { authRoutes } from "./routes/Auth.js";
 
 //Create app object
 const app =express();
@@ -20,7 +21,7 @@ dotenv.config()
 const  mongoURl  = process.env.MONGOURL
 
 // Using VsCode url to connect with mongo DBc
-mongoose.connect(mongoURl).then(()=> console.log("Connected to MONGODB")).catch((err)=>console.log("Cannot connect to MONGODB",err))
+//mongoose.connect(mongoURl).then(()=> console.log("Connected to MONGODB")).catch((err)=>console.log("Cannot connect to MONGODB",err))
 
 const port = process.env.PORT || 5001;
 
@@ -28,3 +29,6 @@ app.listen(port,()=>{
     console.log(`Server running on por ${port}`)
     
 })
+
+//CAlling routes
+app.use("/api/auth",authRoutes)
