@@ -1,8 +1,8 @@
 import express, { urlencoded } from "express"
-import mongoose from "body-parser"
+import mongoose from "mongoose"
 import cors from "cors"
 import dotenv from "dotenv"
-import multer from "multr"
+import multer from "multer"
 import helmet from "helmet"
 import morgan from "morgan"
 import path from "path"
@@ -24,7 +24,7 @@ app.use(morgan("common"))
 
 //Body-parser enable you to customize how it manages request and responses
 app.use(bodyParser.json({limit:"30mb",extended:true}))
-app.use(bodyParser.urlencoded.json({limit:"30mb",extended:true}))
+app.use(bodyParser.urlencoded({limit:"30mb",extended:true}))
 
 //Allow communication between applications
 app.use(cors())
@@ -37,7 +37,7 @@ const __dirname = path.dirname(__filename)
 app.use("/asset",express.static(path.join(__dirname,'public/assets')))
 
 //Setup file sorage using multer library
-const storage = multer.disStorage({
+const storage = multer.diskStorage({
     destination:function(req,file,cb){
         cb(null,"public/assets") //if someone uploads a file is going to be saved in to this folder
     },
@@ -48,6 +48,13 @@ const storage = multer.disStorage({
 //this will help us save the file
 const upload = multer({storage})
 
-app.listen(PORT,=>{
-    console.log
+//MongoDB connection using vsCode url
+const  mongoURl  = "mongodb+srv://thabang:june@social.60ndiqt.mongodb.net/"
+
+// Using VsCode url to connect with mongo DBc
+mongoose.connect(mongoURl).then(()=> console.log("Connected to MONGODB")).catch((err)=>console.log("Cannot connect to MONGODB",err))
+
+const port = process.env.PORT || 5000;
+app.listen(port,()=>{
+    console.log(`Server running on por ${port}`)
 })
