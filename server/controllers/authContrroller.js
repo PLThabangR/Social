@@ -30,6 +30,13 @@ if(existingEmail){
     })
 }
 
+//Password length
+if(password<6){
+    return res.status(400).json({
+        error:"Password must be at least 6 characters long!!"
+    })
+}
+
 //Hash the password
 const salt=await bcrypt.genSalt(10)
 const hashedPassword = await bcrypt.hash(password,salt)
@@ -55,7 +62,6 @@ await newUser.save()
         error:"Invalid User data!!"
     })
 }
-
   }catch(error){
     console.log(error.message)
     res.status(500).json({
@@ -65,10 +71,46 @@ await newUser.save()
 }
 
 export const login= async(req,res)=>{
-    res.json({
-        data:"login up controller"
+  try{
+    const {username,password} = req.body
+
+    //find user from the database
+    const user = await UserModal.findOne({username})
+    //Check if password is valid
+    const isPasswordCorrect = bcrypt.compare(password,user.password)
+ //if user not found
+    if(!user || !isPasswordCorrect){
+        return res.status(400).json({
+            error:"Ivalid username or passord !!"
+        })
+    }
+    //Generate the login for this login session
+    generateTokenAndSetCookie(user._id,res)
+   //Respond with user data
+    res.status(201).json({
+        _id:user._id,
+        username:user.username,
+        fullName:user.fullName,
+        email:user.email,
+        followers:user.followers,
+        following:user.following,
+        profileImg:user.profileImg,
+        coverImg:user.coverImg
+     })
+
+
+
+
+
+
+  }catch(error){
+    console.log(error.message)
+    res.status(500).json({
+        error:"Internal server error ee"
     })
 }
+}
+
 
 
 export const logout= async(req,res)=>{
