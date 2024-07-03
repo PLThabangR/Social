@@ -30,8 +30,8 @@ if(existingEmail){
     })
 }
 
-//Password length
-if(password<6){
+//Password length < 6
+if(password.length <6){
     return res.status(400).json({
         error:"Password must be at least 6 characters long!!"
     })
@@ -77,14 +77,21 @@ export const login= async(req,res)=>{
     //find user from the database
     const user = await UserModal.findOne({username})
     //Check if password is valid
-    const isPasswordCorrect = bcrypt.compare(password,user.password)
+    const isPasswordCorrect = await bcrypt.compare(password,user?.password||"")
  //if user not found
-    if(!user || !isPasswordCorrect){
+    if(!user){
         return res.status(400).json({
-            error:"Ivalid username or passord !!"
+            error:"Invalid username!!"
         })
     }
-    //Generate the login for this login session
+
+     //if user not found
+     if(!isPasswordCorrect){
+        return res.status(400).json({
+            error:"password !!"
+        })
+    }
+    //call function Generate the jwt token  for this login session
     generateTokenAndSetCookie(user._id,res)
    //Respond with user data
     res.status(201).json({
@@ -97,16 +104,11 @@ export const login= async(req,res)=>{
         profileImg:user.profileImg,
         coverImg:user.coverImg
      })
-
-
-
-
-
-
+     
   }catch(error){
     console.log(error.message)
     res.status(500).json({
-        error:"Internal server error ee"
+        error:"Internal server error"
     })
 }
 }
