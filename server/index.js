@@ -1,6 +1,8 @@
+import path from "path";
 import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
+import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
 import { authRoutes } from "./routes/Auth.js";
 
@@ -9,7 +11,8 @@ const app =express();
 
 //*********Middlewares*************
 app.use(express.json()) //Runs between request and responds to parse req.body
-
+app.use(express.urlencoded({extended:true})) //to parse form data(urlencoded)
+app.use(cookieParser())
 //Cookie parser simplifies handling of cookies
 
 //Allow communication between applications
@@ -21,7 +24,7 @@ dotenv.config()
 const  mongoURl  = process.env.MONGOURL
 
 // Using VsCode url to connect with mongo DBc
-//mongoose.connect(mongoURl).then(()=> console.log("Connected to MONGODB")).catch((err)=>console.log("Cannot connect to MONGODB",err))
+mongoose.connect(mongoURl).then(()=> console.log("Connected to MONGODB")).catch((err)=>console.log("Cannot connect to MONGODB",err))
 
 const port = process.env.PORT || 5001;
 

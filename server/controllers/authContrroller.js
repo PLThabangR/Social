@@ -1,9 +1,12 @@
-import { UserModal } from "../models/userModel.js";
+import { generateTokenAndSetCookie } from "../lib/utils/generateToken.js";
+import UserModal  from "../models/userModel.js";
 import bcrypt from "bcryptjs"
 
+
 export const signup= async(req,res)=>{
+
   try{
-    const {fullname,username,password,email} = req.body
+    const {fullName,username,password,email} = req.body
 
     //Check if email is valid using regular expression
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -13,7 +16,7 @@ return res.status(400).json({error:"Invalid email format"})
 
 //Check if user name already exists
 const existingUser = await UserModal.findOne({username});
-if(isUser){
+if(existingUser){
     return res.status(400).json({
         error:"User name is already Taken!!"
     })
@@ -31,15 +34,15 @@ if(existingEmail){
 const salt=await bcrypt.genSalt(10)
 const hashedPassword = await bcrypt.hash(password,salt)
 
-const newUser = new UserModal({username,fullname,email,password:hashedPassword})
+const newUser = new UserModal({username,fullName,email,password:hashedPassword})
 
 if(newUser){
-generateTokenAndSetCookie(newUSer._id,res)
+generateTokenAndSetCookie(newUser._id,res)
 await newUser.save()
  res.status(201).json({
-    _id:newUSer._id,
-    fullname:newUser.fullname,
+    _id:newUser._id,
     username:newUser.username,
+    fullName:newUser.fullName,
     email:newUser.email,
     followers:newUser.followers,
     following:newUser.following,
@@ -54,8 +57,9 @@ await newUser.save()
 }
 
   }catch(error){
+    console.log(error.message)
     res.status(500).json({
-        error:"Internal server error"
+        error:"Internal server error ee"
     })
   }
 }

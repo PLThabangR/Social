@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 
 export const generateTokenAndSetCookie=(userId,res)=>{
         //Create a token which expires in 15 days
-    const token = jwt.sign({userI},process.env.JWT_SECRET,{
+    const token = jwt.sign({userId},process.env.JWT_SECRET,{
         expiresIn:'15d'
     })
 
