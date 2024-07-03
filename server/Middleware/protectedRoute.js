@@ -1,16 +1,18 @@
 //Check if user is authorized or not
 
 import UserModal from "../models/userModel.js";
+import jwt from "jsonwebtoken"
 
-export const protectedRoute=()=> async(req,res,next)=>{
-    try{
-        const {token}= req.cookies.jwt;
+export const protectedRoute= async(req,res,next)=>{
+    try{ 
+        //Get jwt from cookies and save it in new variable token
+        const token= req.cookies.jwt;
         //check if the token exist 
         if(!token){
             res.status(401).json({error:"Unauthorized: No token provided"})
         } 
-
-        const decoded = jwt.veryfy(token,process.env.JWT_SECRET)
+        //Check if token not temperd with
+        const decoded = jwt.verify(token,process.env.JWT_SECRET)
         //If the token is changed or expired
         if(!decoded){
             return res.status(401).json({error:"Unauthorized: Invalid token"})

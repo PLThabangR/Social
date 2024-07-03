@@ -104,7 +104,7 @@ export const login= async(req,res)=>{
         profileImg:user.profileImg,
         coverImg:user.coverImg
      })
-     
+
   }catch(error){
     console.log(error.message)
     res.status(500).json({
@@ -113,10 +113,36 @@ export const login= async(req,res)=>{
 }
 }
 
-
-
 export const logout= async(req,res)=>{
-    res.json({
-        data:"logout up controller"
-    })
+    try{
+        //Removing the cookie 
+        res.cookie("jwt","",{maxAge:0});
+        res.status(200).json({message:"Logged out successfully"})
+        
+
+    }catch(error){
+        console.log(error.message)
+        res.status(500).json({
+            error:"Internal server error"
+        })
+    }
+}
+
+//Get user
+export const getMe=async(req,res)=>{
+
+    try{
+          //FInd user who is looged in now
+    //User is logged already we get this value from the protected routes
+    const user = await UserModal.findById(req.user).select("-password")
+    //return logged user 
+    res.status(200).json(user); 
+    }catch(error){
+        console.log("Error in getMe controller ",error.message)
+        res.status(500).json({
+            error:"Internal server error"
+        })
+
+    }
+   
 }
