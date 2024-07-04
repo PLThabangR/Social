@@ -6,9 +6,18 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
 import { authRoutes } from "./routes/Auth.js";
 import { userRoute } from "./routes/userRoutes.js";
+import {v2 as cloudinary} from "cloudinary"
+
 
 //Create app object
 const app =express();
+
+//Config cloudinary to connect
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key:process.env.API_KEY,
+    api_secret: process.env.API_SECRET
+    })
 
 //*********Middlewares*************
 app.use(express.json()) //Runs between request and responds to parse req.body
@@ -18,7 +27,7 @@ app.use(cookieParser())
 
 //Allow communication between applications
 app.use(cors())
-//Environment variable
+//Environment variable config
 dotenv.config()
 
 //MongoDB connection using vsCode url
@@ -31,7 +40,6 @@ const port = process.env.PORT || 5001;
 
 app.listen(port,()=>{
     console.log(`Server running on port ${port}`)
-    
     
 })
 

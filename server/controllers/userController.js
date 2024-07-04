@@ -1,6 +1,10 @@
+//Models
 import notificationModal from "../models/notification.js";
 import UserModal from "../models/userModel.js";
-import bcrypt from "bcryptjs"
+
+//Packeges
+import bcrypt from "bcryptjs";
+import {v2 as cloudinary} from "cloudinary"
 
 
 export const getUserProfile=async (req,res)=>{
@@ -125,18 +129,18 @@ export const getSuggestedUsers = async (req,res)=>{
 }
 
 export const updateUSerProfile = async (req,res) =>{
+    //Get ner user details
+    const {fullName,email,username,currentPassword,newPassword,bio,link} =  req.body;
+    let {profileImg,coverImg}=  req.body;
+     //Get my user id
+     const userId = req.user._id;
+    
     try{ 
-        //Get ner user details
-        const {fullname,email,username,currentPassword,newPassword,bio,link} =  req.body;
-        let {profileImg,coverImg}=  req.body;
-         //Get my user id
-         const userId = req.user._id;
-
-         const user = await UserModal.findById(id)
-         if(!user) return res.status(404).json({message:"User not found"})
+         let user = await UserModal.findById(userId)
+         if(!user) return res.status(404).json({error:"User not found"})
 
         //Check if password is provided
-        if(!(newPassword && currentPassword) || !(currentPassword && newPassword)){
+        if((!newPassword && currentPassword) || (!currentPassword && newPassword)){
             return res.status(404).json({error:"Please provide both current and passweord and new password"})
         }
         //Compare current paassword and DB password then hash and update
@@ -149,8 +153,48 @@ export const updateUSerProfile = async (req,res) =>{
         //Hash and Set new password 
         user.password = await bcrypt.hash(newPassword,salt)
 
+        //upload to cloudinary
+        if(profileImg){
+            //If the is already a profileImg destroy it and upload a new one
+            // https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
+            if(user.profileImg){
+                await cloudinary.uploader.destroy(use.profileImg.split("/").pop().split(".")[0])
+            }
+            //Use this method to upload
+            const uploadResponse = await cloudinary.uploader.upload(profileImg);
+            //Set the url to profileImg
+            profileImg = uploadResponse.secure_url;
+        }
+
+
+        if(coverImg){
+             //If the is already a profileImg destroy it and upload a new one
+            // https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
+            if(user.coverImg){
+                await cloudinary.uploader.destroy(use.coverImg.split("/").pop().split(".")[0])
+            }
+            //Use this method to upload
+            const uploadResponse = await cloudinary.uploader.upload(coverImg);
+            //Set the url to profileImg
+            coverImg = uploadResponse.secure_url;
+        }
+        //Assign value 
+        user.fullName = fullName || user.fullName;
+        user.email =  email || user.email;
+        user.username= username || user.username;
+        user.bio = bio || user.bio;
+        user.link= link || user.link
+        user.profileImg= profileImg || user.profileImg;
+        user.coverImg = coverImg || user.coverImg;
+        
+        //save to the db 
+        user = await user.save()
+      
+        //do not return the password in the response
+        user.password =null
+        return res.status(200).json({user})
     }catch(error){
-        console.log("Error in suggested user",error.message)
+        console.log("Error in update user",error.message)
         res.status(500).json({
             error:error.message
         }) 
