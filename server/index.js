@@ -1,12 +1,18 @@
 import path from "path";
+
+//packages imports
+import {v2 as cloudinary} from "cloudinary"
 import express from "express"
 import mongoose from "mongoose"
 import cors from "cors"
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
+
+//js files import
 import { authRoutes } from "./routes/Auth.js";
 import { userRoute } from "./routes/userRoutes.js";
-import {v2 as cloudinary} from "cloudinary"
+import { postRoutes } from "./routes/postRoutes.js";
+
 
 
 //Create app object
@@ -48,3 +54,5 @@ app.listen(port,()=>{
 app.use("/api/auth",authRoutes)
 //user Route
 app.use("/api/user",userRoute)
+//Post routes
+app.use("/api/posts/",postRoutes)

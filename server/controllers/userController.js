@@ -53,12 +53,8 @@ export const followUnfollow = async (req,res)=>{
             //Update the arrays followers and follows array of both users using $pull
             await UserModal.findByIdAndUpdate(id,{$pull:{followers:req.user._id}})
             await UserModal.findByIdAndUpdate(req.user._id,{$pull:{following:id}})
-            
-          
             //Return the id of the user to the client
             res.status(200).json({message:"User unfollowed successfully"})
-
-
         }else{
             //follow user
             //Update the arrays followers and follows array of both users using $push 
@@ -112,7 +108,7 @@ export const getSuggestedUsers = async (req,res)=>{
             
             //slice the filtered users to get only 4 users back
           const  suggestedUsers = filteredUsers.slice(0,4)
-          console.log("Filterfollowing users",suggestedUsers)
+        
             //Remove passwords from users not in the db just this  respond
             suggestedUsers.forEach((user)=> user.password=null)
 
