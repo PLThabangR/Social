@@ -5,6 +5,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv"
 import { authRoutes } from "./routes/Auth.js";
+import { userRoute } from "./routes/userRoutes.js";
 
 //Create app object
 const app =express();
@@ -35,4 +36,7 @@ app.listen(port,()=>{
 })
 
 //CAlling routes
+//Authentication route
 app.use("/api/auth",authRoutes)
+//user Route
+app.use("/api/user",userRoute)

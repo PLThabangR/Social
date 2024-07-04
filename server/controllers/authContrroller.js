@@ -76,19 +76,12 @@ export const login= async(req,res)=>{
 
     //find user from the database
     const user = await UserModal.findOne({username})
-    //Check if password is valid
+    //Compare if password is the sae as the hashed one
     const isPasswordCorrect = await bcrypt.compare(password,user?.password||"")
  //if user not found
-    if(!user){
+    if(!user && !isPasswordCorrect){
         return res.status(400).json({
-            error:"Invalid username!!"
-        })
-    }
-
-     //if user not found
-     if(!isPasswordCorrect){
-        return res.status(400).json({
-            error:"password !!"
+            error:"Invalid username or password!!"
         })
     }
     //call function Generate the jwt token  for this login session
