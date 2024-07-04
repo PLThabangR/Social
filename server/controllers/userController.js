@@ -1,5 +1,6 @@
-import notificationModal from "../models/notification.js"
-import UserModal from "../models/userModel.js"
+import notificationModal from "../models/notification.js";
+import UserModal from "../models/userModel.js";
+import bcrypt from "bcryptjs"
 
 
 export const getUserProfile=async (req,res)=>{
@@ -124,8 +125,29 @@ export const getSuggestedUsers = async (req,res)=>{
 }
 
 export const updateUSerProfile = async (req,res) =>{
-    try{
-        const {id}
+    try{ 
+        //Get ner user details
+        const {fullname,email,username,currentPassword,newPassword,bio,link} =  req.body;
+        let {profileImg,coverImg}=  req.body;
+         //Get my user id
+         const userId = req.user._id;
+
+         const user = await UserModal.findById(id)
+         if(!user) return res.status(404).json({message:"User not found"})
+
+        //Check if password is provided
+        if(!(newPassword && currentPassword) || !(currentPassword && newPassword)){
+            return res.status(404).json({error:"Please provide both current and passweord and new password"})
+        }
+        //Compare current paassword and DB password then hash and update
+        if(currentPassword && newPassword){
+            const isMatch = await bcrypt.compare(currentPassword,user.password)
+            if(!isMatch) return res.status(400).json({error:"Current password is incorrect"})
+        }
+        
+        const salt =  await bcrypt.genSalt(10)
+        //Hash and Set new password 
+        user.password = await bcrypt.hash(newPassword,salt)
 
     }catch(error){
         console.log("Error in suggested user",error.message)
