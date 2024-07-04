@@ -104,14 +104,14 @@ export const getSuggestedUsers = async (req,res)=>{
             //Exclude user followed by me using this basic function  becuase the aggregate will return 10 sample
             //This will filter out users Id follow
             const filteredUsers = users.filter((user)=>!userFollowedByMe.following.includes(user._id))
-            console.log(filteredUsers)
+            
             //slice the filtered users to get only 4 users back
           const  suggestedUsers = filteredUsers.slice(0,4)
           console.log("Filterfollowing users",suggestedUsers)
-            //Remove passwords from users
+            //Remove passwords from users not in the db just this  respond
             suggestedUsers.forEach((user)=> user.password=null)
 
-            console.log("No pass",suggestedUsers)
+            
             // Return the list of suggested users
             res.status(200).json(suggestedUsers)
     }catch(error){
@@ -121,4 +121,16 @@ export const getSuggestedUsers = async (req,res)=>{
         })
     }
 
+}
+
+export const updateUSerProfile = async (req,res) =>{
+    try{
+        const {id}
+
+    }catch(error){
+        console.log("Error in suggested user",error.message)
+        res.status(500).json({
+            error:error.message
+        }) 
+    }
 }
