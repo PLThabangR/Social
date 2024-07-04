@@ -80,3 +80,45 @@ export const followUnfollow = async (req,res)=>{
         })
     }
 }
+
+export const getSuggestedUsers = async (req,res)=>{
+  
+    try{
+            //Exclude our self from sidebar and users that we already follow
+            //Get my user id
+            const userId = req.user._id;
+
+            //get list of people I follow
+            const userFollowedByMe = await UserModal.findById(userId).select("following")
+
+            //Exlcude  yourself and get ten users using aggregate
+            const users = await UserModal.aggregate([
+                {$match:{
+                    _id:{$ne:userId}, //match where _id is not equals to userId
+                }
+                },
+                {$sample:{size:10}}, //we would like to get 10 diffierent users
+                
+            ]);
+ 
+            //Exclude user followed by me using this basic function  becuase the aggregate will return 10 sample
+            //This will filter out users Id follow
+            const filteredUsers = users.filter((user)=>!userFollowedByMe.following.includes(user._id))
+            console.log(filteredUsers)
+            //slice the filtered users to get only 4 users back
+          const  suggestedUsers = filteredUsers.slice(0,4)
+          console.log("Filterfollowing users",suggestedUsers)
+            //Remove passwords from users
+            suggestedUsers.forEach((user)=> user.password=null)
+
+            console.log("No pass",suggestedUsers)
+            // Return the list of suggested users
+            res.status(200).json(suggestedUsers)
+    }catch(error){
+   console.log("Error in suggested user",error.message)
+        res.status(500).json({
+            error:error.message
+        })
+    }
+
+}
