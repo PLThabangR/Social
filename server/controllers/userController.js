@@ -1,3 +1,4 @@
+import notificationModal from "../models/notification.js"
 import UserModal from "../models/userModel.js"
 
 
@@ -47,6 +48,9 @@ export const followUnfollow = async (req,res)=>{
             //Update the arrays followers and follows array of both users using $pull
             await UserModal.findByIdAndUpdate(id,{$pull:{followers:req.user._id}})
             await UserModal.findByIdAndUpdate(req.user._id,{$pull:{following:id}})
+            
+          
+            //Return the id of the user to the client
             res.status(200).json({message:"User unfollowed successfully"})
 
 
@@ -55,6 +59,15 @@ export const followUnfollow = async (req,res)=>{
             //Update the arrays followers and follows array of both users using $push 
             await UserModal.findByIdAndUpdate(id,{$push:{followers:req.user._id}})
             await UserModal.findByIdAndUpdate(req.user._id,{$push:{following:id}})
+
+              //Send notification to user
+              const newNotification= new notificationModal({
+                type:"follow",
+                from: req.user._id,
+                to:userToModify._id
+            })
+            //Save the new notification to the database
+            await newNotification.save()
             res.status(200).json({message:"User followed successfully"})
         }
 
