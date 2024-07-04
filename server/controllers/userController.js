@@ -147,11 +147,12 @@ export const updateUSerProfile = async (req,res) =>{
         if(currentPassword && newPassword){
             const isMatch = await bcrypt.compare(currentPassword,user.password)
             if(!isMatch) return res.status(400).json({error:"Current password is incorrect"})
+                const salt =  await bcrypt.genSalt(10)
+            //Hash and Set new password 
+            user.password = await bcrypt.hash(newPassword,salt)
+
         }
         
-        const salt =  await bcrypt.genSalt(10)
-        //Hash and Set new password 
-        user.password = await bcrypt.hash(newPassword,salt)
 
         //upload to cloudinary
         if(profileImg){
@@ -186,6 +187,7 @@ export const updateUSerProfile = async (req,res) =>{
         user.link= link || user.link
         user.profileImg= profileImg || user.profileImg;
         user.coverImg = coverImg || user.coverImg;
+        console.log(user.fullName,user.email)
         
         //save to the db 
         user = await user.save()
