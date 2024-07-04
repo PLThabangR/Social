@@ -143,10 +143,12 @@ export const updateUSerProfile = async (req,res) =>{
         if((!newPassword && currentPassword) || (!currentPassword && newPassword)){
             return res.status(404).json({error:"Please provide both current and passweord and new password"})
         }
+        
         //Compare current paassword and DB password then hash and update
         if(currentPassword && newPassword){
             const isMatch = await bcrypt.compare(currentPassword,user.password)
             if(!isMatch) return res.status(400).json({error:"Current password is incorrect"})
+                if(newPassword.length <6) return res.status(400).json({error:"Password should be more than 6"})
                 const salt =  await bcrypt.genSalt(10)
             //Hash and Set new password 
             user.password = await bcrypt.hash(newPassword,salt)
