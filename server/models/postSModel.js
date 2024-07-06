@@ -2,7 +2,6 @@ import mongoose from "mongoose";
 
 
 //Create Schema
-
 const postSchema = new mongoose.Schema({
     user:{
         type:mongoose.Schema.Types.ObjectId,
@@ -24,7 +23,7 @@ const postSchema = new mongoose.Schema({
     comments:[
         {text:{
             type:String,
-            required
+            required:true
         },
     user:{
         type:mongoose.Schema.Types.ObjectId,

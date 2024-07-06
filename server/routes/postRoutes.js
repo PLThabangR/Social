@@ -5,7 +5,7 @@ import { createPost } from '../controllers/postsController.js';
 //Create router
 const router = express.Router()
 
-router.post ("/create-posts",protectedRoute,createPost,createPost)
+router.post ("/create",protectedRoute,createPost,createPost)
 // router.post ("/ike/:id",protectedRoute,likeUnlikePost)
 // router.post ("/comment/:id",protectedRoute,commentPost)
 // router.post ("/delete",protectedRoute,deletePost)
