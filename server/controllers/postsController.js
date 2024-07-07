@@ -120,17 +120,17 @@ export const commentPost = async (req,res)=>{
 export const likeUnlikePost=async(req,res)=>{
     console.log("In likeUnlike")
     try{
-        const userId = req.user._id.toString();
-        const postId = req.params;
+        const userId = req.user._id;
+        const {id:postId} = req.params;
 
         const post =await PostModel.findById(postId) 
         if(!post){
             return res.status(404).json({error:"Post not found"})
         }
-
+        console.log("userloke0")
         //check if the post includes the id
         const userLikeDPost = post.likes.includes(userId)
-
+        console.log("userloke1")
         if(userLikeDPost){
             //Unlike the post
             await PostModel.updateOne({_id:postId},{$pull:{likes:userId}})
