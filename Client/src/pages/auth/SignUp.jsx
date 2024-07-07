@@ -18,9 +18,12 @@ const SignUp = () => {
   const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
-  const handleSubmit=()=>{
-
+  const handleSubmit=(e)=>{
+    e.preventDefault()
+console.log(formData)
   }
+
+  const isError = false;
 
   return (
     <>
@@ -79,8 +82,9 @@ const SignUp = () => {
 						/>
 					</label>
 					<button className='btn rounded-full btn-primary text-white'>
-		
+                  SignUp
 					</button>
+          {isError && <p className='text-red-500'>Something went wrong</p>}
 				
 				</form>
 				<div className='flex flex-col lg:w-2/3 gap-2 mt-4'>
