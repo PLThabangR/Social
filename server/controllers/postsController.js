@@ -49,24 +49,25 @@ export const createPost =async(req,res)=>{
 }
 
 export const deletePost = async(req,res)=>{
-
+    
     try{
-        //Find post from database
+        //Find post from database using id
       const post=  await PostModel.findById(req.params.id)
         if(!post){
             return res.status(404).json({error:"Post not found"})
         }
-        //Check if user is authorized to delete this
+        //Check if user is authorized to delete this meaning auth
         //user is a ID in the post model
-        if(req.userId.toString() !== post.user.toString()){
-            return res.status(404).json({error:"You are not authorized to delete this post"})
+        if(req.user._id.toString() !== post.user.toString()){
+            
+            return res.status(401).json({error:"You are not authorized to delete this post"})
         }
         ////If the is already a profileImg destroy it and upload a new one
          // https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
             if(post.img){
                 //Get the image ID
              const imgID =  post.img.split("/").pop().split(".")[0]
-             
+            //Delete image from cloudinary 
              await cloudinary.uploader.destroy(imgID)
             }
             //Then Delete the post
