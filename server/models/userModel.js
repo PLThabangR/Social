@@ -38,7 +38,8 @@ following:[
  },
  likedPosts:{
    type:String,
-   default:"Post"
+   default:"Post",
+   default:[]
  }
 
 }

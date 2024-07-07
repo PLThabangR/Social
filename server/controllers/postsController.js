@@ -132,12 +132,17 @@ export const likeUnlikePost=async(req,res)=>{
         const userLikeDPost = post.likes.includes(userId)
         console.log("userloke1")
         if(userLikeDPost){
-            //Unlike the post
+            //Unlike the post by remove the postId from the likes array
             await PostModel.updateOne({_id:postId},{$pull:{likes:userId}})
+            //Update the liked post array by remove the postId from the likedPosts array
+            await UserModal.updateOne({_id:userId},{$pull:{likedPosts:postId}})
             res.status(200).json({message:"Post unliked successfully"})
         }else{
+            //Update the likes post array by adding the postId to de likes array
             post.likes.push(userId)
             await post.save()
+             //Update the likedPosts post array by adding the postId to de likedPosts array
+             await UserModal.updateOne({_id:userId},{$push:{likedPosts:postId}})
 
             //Send notification to the user
             const notification= new notificationModal({
@@ -187,3 +192,34 @@ try{
 
 }
 
+export const getFollowing= async(req,res)=>{
+console.log("GET FOLLOWING")
+    try{
+        //get authenticated user
+        const userId=req.user._id
+        //Check if user exist
+        const user = await UserModal.findById(userId);
+        if(!user){
+            return res.status(404).json({error:"User not found"})
+        }
+
+        //Get list of following
+        const following = user.following;
+        const feedPosts = await PostModel.find({user:{$in:following}}).populate({
+            path:"user",
+            select:"-password"
+        }).populate({
+            path:"comments.user",
+            select:"-password"
+        })
+
+        res.status(200).json(feedPosts)
+
+    }catch(error){
+        console.log("Error in getAll Posts",error.message)
+        res.status(500).json({
+            error:error.message
+        }) 
+    }
+
+}
