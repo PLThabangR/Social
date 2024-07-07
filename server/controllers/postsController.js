@@ -160,3 +160,27 @@ export const likeUnlikePost=async(req,res)=>{
 
 }
 
+export const getAllPosts = async(req,res)=>{
+    console.log("Welcome to get all")
+try{
+
+    const posts = await PostModel.find().sort({createdAt:-1}).populate({
+        path:"user",
+        select:"-password"
+    })
+
+    if(posts.length ===0){
+        res.status(200).json([]);
+    }
+ 
+    res.status(201).json(posts)
+
+}catch(error){
+    console.log("Error in getAll Posts",error.message)
+    res.status(500).json({
+        error:error.message
+    }) 
+}
+
+}
+
