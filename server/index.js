@@ -12,6 +12,7 @@ import dotenv from "dotenv"
 import { authRoutes } from "./routes/Auth.js";
 import { userRoute } from "./routes/userRoutes.js";
 import { postRoutes } from "./routes/postRoutes.js";
+import { notificationRoutes } from "./routes/notificationRoutes.js";
 
 
 
@@ -56,3 +57,5 @@ app.use("/api/auth",authRoutes)
 app.use("/api/user",userRoute)
 //Post routes
 app.use("/api/posts/",postRoutes)
+//Notification Routes
+app.use("/api/notification",notificationRoutes)
