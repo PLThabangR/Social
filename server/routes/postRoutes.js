@@ -6,7 +6,7 @@ import { createPost, deletePost ,commentPost,likeUnlikePost} from '../controller
 const router = express.Router()
 
 router.post("/create",protectedRoute,createPost,createPost)
-router.post("/ike/:id",protectedRoute,likeUnlikePost)
+router.post("/like/:id",protectedRoute,likeUnlikePost)
 router.post("/comment/:id",protectedRoute,commentPost)
  router.delete("/delete/:id",protectedRoute,deletePost)
 

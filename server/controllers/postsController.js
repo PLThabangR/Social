@@ -1,3 +1,4 @@
+import notificationModal from "../models/notification.js"
 import PostModel from "../models/postSModel.js"
 import UserModal from "../models/userModel.js"
 
@@ -87,23 +88,26 @@ export const commentPost = async (req,res)=>{
 
     try{
         const {text} = req.body
-        const {postId} = req.params
+       // const {postId} = req.params
         const userId =req.user._id
 
         if(!text){
             return res.status(400).json({error:"Text field is required"})
         }
-        const post = PostModel.findById(postId) 
+        //find post by ID
+        const post = await PostModel.findById(req.params.id) 
+        //Check post exist
         if(!post){
             return res.status(404).json({error:"Post not found"})
         }
-        //Create comment 
+        //Create new comment 
         const comment={user:userId,text};
-        //Push new comments to the array
+        //Push new comments to the array ofthe model
        post.comments.push(comment)
+    //Save to the DB
         await post.save()
-
-        res.status(200).json({post})
+        //@200 created
+        res.status(200).json(post)
     }catch(error){
         console.log("Error in comment post",error.message)
         res.status(500).json({
@@ -113,7 +117,42 @@ export const commentPost = async (req,res)=>{
     }
 }
 
-export const likeUnlikePost=async()=>{
+export const likeUnlikePost=async(req,res)=>{
+    console.log("In likeUnlike")
+    try{
+        const userId = req.user._id.toString();
+        const postId = req.params;
 
-    
+        const post =await PostModel.findById(postId) 
+        if(!post){
+            return res.status(404).json({error:"Post not found"})
+        }
+
+        //check if the post includes the id
+        const userLikeDPost = post.likes.includes(userId)
+
+        if(userLikeDPost){
+            //Unlike the post
+            await PostModel.updateOne({_id:postId},{$pull:{likes:userId}})
+            res.status(200).json({message:"Post unliked successfully"})
+        }else{
+            post.likes.push(userId)
+            await post.save()
+
+            //Send notification to the user
+            const notification= new notificationModal({
+                from: userId,
+                to:post.user,
+                type:"like"
+            })
+
+            notification.save()
+        }
+    }catch(error){
+        console.log("Error in likeUnlike",error.message)
+        res.status(500).json({
+            error:error.message
+        }) 
+    }
+
 }

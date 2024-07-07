@@ -51,14 +51,18 @@ export const followUnfollow = async (req,res)=>{
         if(isFollowing){
             //unfollow user 
             //Update the arrays followers and follows array of both users using $pull
+             //remove user id follows array
             await UserModal.findByIdAndUpdate(id,{$pull:{followers:req.user._id}})
+            //remove user id folling array
             await UserModal.findByIdAndUpdate(req.user._id,{$pull:{following:id}})
             //Return the id of the user to the client
             res.status(200).json({message:"User unfollowed successfully"})
         }else{
             //follow user
             //Update the arrays followers and follows array of both users using $push 
+             //Add user id followers
             await UserModal.findByIdAndUpdate(id,{$push:{followers:req.user._id}})
+             //Add user id following array
             await UserModal.findByIdAndUpdate(req.user._id,{$push:{following:id}})
 
               //Send notification to user
