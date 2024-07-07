@@ -35,6 +35,10 @@ following:[
  link:{
     type:String,
     default:""
+ },
+ likedPosts:{
+   type:String,
+   default:"Post"
  }
 
 }
