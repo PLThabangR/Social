@@ -1,6 +1,6 @@
 import express from 'express';
 import { protectedRoute } from '../Middleware/protectedRoute.js';
-import { createPost } from '../controllers/postsController.js';
+import { createPost, deletePost } from '../controllers/postsController.js';
 
 //Create router
 const router = express.Router()
@@ -8,7 +8,7 @@ const router = express.Router()
 router.post ("/create",protectedRoute,createPost,createPost)
 // router.post ("/ike/:id",protectedRoute,likeUnlikePost)
 // router.post ("/comment/:id",protectedRoute,commentPost)
-// router.post ("/delete",protectedRoute,deletePost)
+ router.post ("/delete/:id",protectedRoute,deletePost)
 
 
 export  {router as postRoutes}

@@ -170,6 +170,7 @@ export const updateUSerProfile = async (req,res) =>{
              //If the is already a profileImg destroy it and upload a new one
             // https://res.cloudinary.com/dyfqon1v6/image/upload/v1712997552/zmxorcxexpdbh8r0bkjb.png
             if(user.coverImg){
+                //Delete image from cloudinary pass the img ID to destroy
                 await cloudinary.uploader.destroy(use.coverImg.split("/").pop().split(".")[0])
             }
             //Use this method to upload
