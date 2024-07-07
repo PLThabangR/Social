@@ -82,3 +82,38 @@ export const deletePost = async(req,res)=>{
     }
 
 }
+
+export const commentPost = async (req,res)=>{
+
+    try{
+        const {text} = req.body
+        const {postId} = req.params
+        const userId =req.user._id
+
+        if(!text){
+            return res.status(400).json({error:"Text field is required"})
+        }
+        const post = PostModel.findById(postId) 
+        if(!post){
+            return res.status(404).json({error:"Post not found"})
+        }
+        //Create comment 
+        const comment={user:userId,text};
+        //Push new comments to the array
+       post.comments.push(comment)
+        await post.save()
+
+        res.status(200).json({post})
+    }catch(error){
+        console.log("Error in comment post",error.message)
+        res.status(500).json({
+            error:error.message
+        }) 
+    
+    }
+}
+
+export const likeUnlikePost=async()=>{
+
+    
+}
