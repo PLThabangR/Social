@@ -88,14 +88,14 @@ export const commentPost = async (req,res)=>{
 
     try{
         const {text} = req.body
-       // const {postId} = req.params
+        const postId= req.params.id
         const userId =req.user._id
 
         if(!text){
             return res.status(400).json({error:"Text field is required"})
         }
         //find post by ID
-        const post = await PostModel.findById(req.params.id) 
+        const post = await PostModel.findById(postId) 
         //Check post exist
         if(!post){
             return res.status(404).json({error:"Post not found"})
@@ -121,7 +121,7 @@ export const likeUnlikePost=async(req,res)=>{
     console.log("In likeUnlike")
     try{
         const userId = req.user._id;
-        const {id:postId} = req.params;
+        const postId = req.params.id;
 
         const post =await PostModel.findById(postId) 
         if(!post){
@@ -147,6 +147,9 @@ export const likeUnlikePost=async(req,res)=>{
             })
 
             notification.save()
+
+            const updatedLikes = post.likes;
+			res.status(200).json(updatedLikes);
         }
     }catch(error){
         console.log("Error in likeUnlike",error.message)
@@ -156,3 +159,4 @@ export const likeUnlikePost=async(req,res)=>{
     }
 
 }
+
