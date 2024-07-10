@@ -36,11 +36,7 @@ following:[
     type:String,
     default:""
  },
- likedPosts:{
-   type:String,
-   default:"Post",
-   default:[]
- }
+ 
 
 }
 ,{timeStamp:true})

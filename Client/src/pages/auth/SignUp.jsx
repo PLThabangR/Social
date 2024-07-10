@@ -32,16 +32,19 @@ const {mutate,isError,isPending,error} = useMutation({
 			//Convert javascript object to string
 			body:JSON.stringify({email,username,fullName,password})
 		})
-//if(!res.ok) throw new Error("Something went wrong")
+
 	const data = await res.json();
+	if(!res.ok) throw new Error(data.error)
 	if(data.error) throw new Error(data.error)
 	console.log(data)
 		return data
-
 	}catch(error){
-
-toast.error(error.message)
+		console.log(error)
+	throw error;
 	}
+},
+onSuccess:()=>{
+	toast.success("Account created successfully")
 }
 })
 
