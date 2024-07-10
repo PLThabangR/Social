@@ -19,7 +19,7 @@ const Login = () => {
 	};
 
 		//Use mutation function to create ,update and delete data
-const {mutate,isError,isPending,error} = useMutation({
+const {mutate:loginMutation,isError,isPending,error} = useMutation({
 	mutationFn: async ({username,password})=>{
 	try{
 
@@ -48,7 +48,7 @@ onSuccess:()=>{
 
   const handleSubmit = (e) => {
 		e.preventDefault();
-		mutate(formData)
+		loginMutation(formData)
 		
 	};
 

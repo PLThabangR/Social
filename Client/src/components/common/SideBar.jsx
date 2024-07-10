@@ -5,6 +5,8 @@ import { Link } from "react-router-dom";
 import { BiLogOut } from "react-icons/bi";
 import toast from "react-hot-toast";
 import XSvg from "../../components/svgs/x";
+import { useMutation } from "@tanstack/react-query";
+
 
 const SideBar = () => {
     const logout=()=>{
@@ -16,6 +18,30 @@ const SideBar = () => {
         username: "johndoe",
         profileImg: "/avatar/boy1.png"
     }
+
+			//Use mutation function to create ,update and delete data
+const {mutate:logoutMutation,isError,isPending,error} = useMutation({
+	mutationFn: async ()=>{
+	try{
+
+		const res = await fetch('/api/auth/logout',{
+			method:"POST",
+
+		})
+
+	//const data = await res.json();
+	if(!res.ok) throw new Error(data.error || "Failed to Login in")
+	console.log(data)
+		return data
+	}catch(error){
+		console.log(error)
+	throw error;
+	}
+},
+onSuccess:()=>{
+	toast.success("LoggedOut successfully")
+}
+})
   return (
     <>
     <div className='md:flex-[2_2_0] w-18 max-w-52'>
@@ -72,7 +98,7 @@ const SideBar = () => {
 								className='w-5 h-5 cursor-pointer'
 								onClick={(e) => {
 									e.preventDefault();
-									logout();
+									logoutMutation();
 								}}
 							/>
 						</div>
