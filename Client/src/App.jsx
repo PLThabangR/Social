@@ -4,6 +4,7 @@ import SignUp from "./pages/auth/SignUp"
 import Login from "./pages/auth/Login"
 import SideBar from "./components/common/SideBar"
 import RightPanel from "./components/common/RightPanel"
+import { Toaster } from "react-hot-toast"
 
 function App() {
  
@@ -18,6 +19,7 @@ function App() {
       <Route path="/signup" element={<SignUp/>}/>
       <Route path="/login" element={<Login/>}/>
     </Routes>
+    <Toaster/>
 <RightPanel/>
 
     </div>

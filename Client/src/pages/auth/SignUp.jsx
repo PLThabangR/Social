@@ -5,6 +5,10 @@ import { FaUser } from "react-icons/fa";
 import { MdPassword } from "react-icons/md";
 import { MdDriveFileRenameOutline } from "react-icons/md";
 import XSvg from "../../components/svgs/x";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+
+
 
 const SignUp = () => {
 
@@ -15,15 +19,43 @@ const SignUp = () => {
 		password: "",
 	});
 
+	//Use
+const {mutate,isError,isPending,error} = useMutation({
+	mutationFn: async ({email,username,fullName,password})=>{
+	try{
+
+		const res = await fetch('/api/auth/signup',{
+			method:"POST",
+			headers:{
+				"Content-Type":"application/json"
+			},
+			//Convert javascript object to string
+			body:JSON.stringify({email,username,fullName,password})
+		})
+//if(!res.ok) throw new Error("Something went wrong")
+	const data = await res.json();
+	if(data.error) throw new Error(data.error)
+	console.log(data)
+		return data
+
+	}catch(error){
+
+toast.error(error.message)
+	}
+}
+})
+
   const handleInputChange = (e) => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
   const handleSubmit=(e)=>{
     e.preventDefault()
-console.log(formData)
+	//When we submit this form we call mutate function
+	mutate(formData)
+
   }
 
-  const isError = false;
+
 
   return (
     <>
@@ -82,9 +114,9 @@ console.log(formData)
 						/>
 					</label>
 					<button className='btn rounded-full btn-primary text-white'>
-                  SignUp
+                  {isPending? "Loading":"Sign Up"}
 					</button>
-          {isError && <p className='text-red-500'>Something went wrong</p>}
+          {isError && <p className='text-red-500'>{error.message}</p>}
 				
 				</form>
 				<div className='flex flex-col lg:w-2/3 gap-2 mt-4'>
