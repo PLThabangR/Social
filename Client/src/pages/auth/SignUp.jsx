@@ -19,7 +19,7 @@ const SignUp = () => {
 		password: "",
 	});
 
-	//Use
+	//Use mutation function to create ,update and delete data
 const {mutate,isError,isPending,error} = useMutation({
 	mutationFn: async ({email,username,fullName,password})=>{
 	try{
@@ -34,8 +34,7 @@ const {mutate,isError,isPending,error} = useMutation({
 		})
 
 	const data = await res.json();
-	if(!res.ok) throw new Error(data.error)
-	if(data.error) throw new Error(data.error)
+	if(!res.ok) throw new Error(data.error || "Failed to create account")
 	console.log(data)
 		return data
 	}catch(error){

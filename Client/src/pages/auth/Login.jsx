@@ -5,6 +5,8 @@ import XSvg from "../../components/svgs/x";
 
 import { MdOutlineMail } from "react-icons/md";
 import { MdPassword } from "react-icons/md";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
 const Login = () => {
 
   const [formData, setFormData] = useState({
@@ -16,13 +18,40 @@ const Login = () => {
 		setFormData({ ...formData, [e.target.name]: e.target.value });
 	};
 
+		//Use mutation function to create ,update and delete data
+const {mutate,isError,isPending,error} = useMutation({
+	mutationFn: async ({username,password})=>{
+	try{
+
+		const res = await fetch('/api/auth/login',{
+			method:"POST",
+			headers:{
+				"Content-Type":"application/json"
+			},
+			//Convert javascript object to string
+			body:JSON.stringify({username,password})
+		})
+
+	const data = await res.json();
+	if(!res.ok) throw new Error(data.error || "Failed to Login in")
+	console.log(data)
+		return data
+	}catch(error){
+		console.log(error)
+	throw error;
+	}
+},
+onSuccess:()=>{
+	toast.success("LoggedIn successfully")
+}
+})
+
   const handleSubmit = (e) => {
 		e.preventDefault();
+		mutate(formData)
 		
 	};
 
-  const isPending = false
-  const isError = false
   return (
     <>
     <div className='max-w-screen-xl mx-auto flex h-screen'>
@@ -59,7 +88,7 @@ const Login = () => {
 					<button className='btn rounded-full btn-primary text-white'>
 						{isPending ? "Loading..." : "Login"}
 					</button>
-					{isError && <p className='text-red-500'>Something went wrong</p>}
+					{isError && <p className='text-red-500'>{error.message}</p>}
 				</form>
 				<div className='flex flex-col gap-2 mt-4'>
 					<p className='text-white text-lg'>{"Don't"} have an account?</p>
